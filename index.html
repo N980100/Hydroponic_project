@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang='ru' dir='ltr'>
+  <head>
+    <meta name='viewport' charset='utf-8'>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <title>Моя гидропоника</title>
+    <style>
+      .square{
+        height: 7px;
+        width: auto;
+        background-color: #ffffff;
+      }
+      body{
+        color: #fff;
+        font-family: sans-serif;
+      }
+      .info {
+        font-size: 21.5px;
+        margin-left: 19px;
+      }
+      .buttons{
+        margin-left: 18px;
+        border-width: 1.75px;
+        border-color: white ;
+        border-radius: 4px;
+        font-size: 17px;
+        padding: 17px;
+        color: #f2ef91;
+        background-color: black;
+      }
+
+    </style>
+  </head>
+  <body style='background-color: #000000;'>
+
+  <p style= ' font-size: 42px ; display: inline-block;'><b> Моя гидропоника<br></b></p>
+  <p style='font-size: 37px; text-align: right;display: inline-block; float: right;margin-right: 50px'><b>Время : <span id= 'watch'></b></span></p>
+
+
+  <div class='square'></div>
+
+  <p style='text-align: left; font-size: 35px ; margin-left: 32px'><b>Первая гидропоника</b></p>
+  <p class="info">Влажность в первом горшке : <span id='moisure1'>-</span>%</p>
+  <p class="info">Влажность во втором горшке : <span id='moisure2'>-</span>%</p>
+  <p class="info">Температура : <span id = "temperature">-</span> ºC</p>
+  <button type ='button' onclick="ph()" class="buttons" id='pH'>Измерить pH</button>
+  <button type ='button' onclick="ppm()" class="buttons" style=' margin-bottom: 18px;margin-left: 27px;' id='ppm'>Измерить минерализацию</button></span>
+  <div id='chart-temperature' class='container' style ='margin : 30px'></div>
+  <div class='square'></div>
+  <script>function GetTemperature( ) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById('temperature').innerHTML  = this.responseText;
+      }
+    };
+    xhttp.open('GET', '/temperature', true);
+    xhttp.send();}
+    GetTemperature();</script>
+  <br>
+  </span>
+  </body>
+  <script>
+    var chartT = new Highcharts.Chart({
+  chart:{ renderTo : 'chart-temperature' ,backgroundColor: '#000000',
+          type: 'spline'},
+  title: { text: 'График влажности в первом горшке', style : {
+    color: '#ffffff',
+    fontsize: '18px',
+  } },
+  
+  series: [{
+    showInLegend: false,
+    data: [],
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled:false}
+    },
+    series: { color: '#ffffff'}//цвет линии
+  },
+  xAxis: { 
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%D:%m' },
+    labels:{enabled : false }
+  },
+  yAxis: {
+    title: { text: 'Влажность -%', style : {
+      color: '#ffffff',
+      fontsize: '15px',
+    }}
+  },
+  credits: { enabled: false }
+});
+
+
+
+
+function ppm () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open('GET', '/ppm', true);
+  xhttp.send();};
+function ph() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open('GET', '/ph', true);
+  xhttp.send();};
+  
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById('watch').innerHTML  = this.responseText;
+    }
+  };
+  xhttp.open('GET', '/watch', true);
+  xhttp.send();
+}, 1000 ) ;
+
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById('moisure1').innerHTML  = this.responseText;
+    }
+  };
+  xhttp.open('GET', '/moisure1', true);
+  xhttp.send();
+}, 740) ;
+
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById('moisure2').innerHTML  = this.responseText;
+    }
+  };
+  xhttp.open('GET', '/moisure2', true);
+  xhttp.send();
+}, 740) ;
+
+function GetTemperature( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById('temperature').innerHTML  = this.responseText;
+    }
+  };
+  xhttp.open('GET', '/temperature', true);
+  xhttp.send();}
+setInterval(GetTemperature, 14878 ) ;
+  </script>
+</html>
