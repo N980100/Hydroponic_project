@@ -78,7 +78,7 @@ void setup()
     //initTDS(TdsSensorPin);
 
     sensors.begin();
-    
+
     timeClient.begin();
     timeClient.setTimeOffset(10800);
 
@@ -125,12 +125,12 @@ void loop()
     LastForInfluxDB = millis();
     SendDataToInfluxDB(getMoisure(34),getMoisure(35));
   }
-  
+
 }
 
 void loop2(void *pvParameters)
 {
-  //таймер для записи в файл 
+  //таймер для записи в файл
   unsigned long previousMillis;
 
   // интервал записи в файл в мс
@@ -151,11 +151,10 @@ void loop2(void *pvParameters)
         StoreDataToSd(mos, mos1, time_on, filename1);
         previousMillis = millis();
     }
-    
+
     // Обработка бота
     bot.attach(newMsg);
     bot.setChatID(-1002041443761);
-
     time_on = GetPumpTimeOn();
     delay(50);
     if(millis()>300000){
@@ -187,7 +186,7 @@ void newMsg(FB_msg &msg)
       previousMillis1 = now1;
     }
     else
-    {   
+    {
       //собираем короткое сообщение
       longMsg = false;
     }
@@ -197,9 +196,9 @@ void newMsg(FB_msg &msg)
 
 //включает насос и возвращает время выключения
 String GetPumpTimeOn()
-{ 
+{
   ResetMidMoisure();
-  if (g_moisure < 49 and g_temperature < 30.1) { 
+  if (g_moisure < 49 and g_temperature < 30.1) {
 
     digitalWrite(RelayPin,LOW);
     delay(15000);
@@ -212,14 +211,14 @@ String GetPumpTimeOn()
     return String(rtc.getTime());
   }
   return time_on;
-  
+
 }
 
 //Собирает сообщение для ТГ бота
 String CreateMessage(bool LendthOfMsg){
   String time = String(rtc.getHour(true)) + String(":") + String(rtc.getMinute());
   String MoisureValue = String(String(" ") +String(g_moisure) + String(" %"));
-  
+
   /*if (mid<49 and LendthOfMsg== true and temp>0){
     return String("Внимание! Средняя влажность упала ниже 48 % и составляет " + MoisureValue + "\n" + "В связи с высокой температурой окружающей среды полив будет произведен позже");
   }
@@ -273,7 +272,7 @@ void StoreDataToSd(int mos1, int mos, String time_on, String filename1)
 /*float GetTds()
 {
     //gravityTds.setTemperature(temperature);  set the temperature and execute temperature compensation
-    gravityTds.update();  //sample and calculate 
+    gravityTds.update();  //sample and calculate
     float TdsValue = gravityTds.getTdsValue();  // then get the value
     return round(TdsValue);
 }
@@ -283,7 +282,7 @@ void initTDS(byte TdsSensorPin)
 {   gravityTds.setPin(TdsSensorPin);
     gravityTds.setAref(5.0);
     gravityTds.setAdcRange(4096);
-    gravityTds.begin(); 
+    gravityTds.begin();
 }*/
 float GetTemperature(){
   sensors.requestTemperatures();
@@ -314,7 +313,7 @@ void SendDataToInfluxDB(int moisure1, int moisure2 ){
   sensor.addField("moisure1", moisure1);
   sensor.addField("moisure2", moisure2);
   sensor.addField("temperature" ,g_temperature);
-  
+
 
   Serial.print("Writing: ");
   Serial.println(sensor.toLineProtocol());
